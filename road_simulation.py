@@ -90,9 +90,20 @@ def adjust_speed(speed, target):
 
 # TODO 6: Use a loop. Return (speed_signs, zebras, buses).
 def count_signs(road_list):
-    pass
+    speed_signs = 0
+    zebras = 0
+    bueses = 0
 
-
+    for signs in road_list:
+        sign_type = get_sign_type(sign)
+        if  sign_type == "speed":
+            speed_signs +=1
+        elif sign_type == "zebra":
+            zebras +=1
+        elif sign_type == "bus":
+            bueses +=1
+        
+    return(speed_signs, zebras, bueses)
 # ==================== PART 3: SAFE INPUT AND JOURNEY SUMMARY ====================
 
 # TODO 7: Keep asking until the user types a whole number from low to high.
