@@ -18,9 +18,9 @@ END_NAME = "Convention Center"
 road = [
     "60", "road", "road", "road", "zebra", "road", "road",
     "80", "road", "road", "road", "road", "road", "road",
-    "bus", "road", "road", "bus", "road", "road","road",
-    "60", "road", "road", "road", "road","80", "road", 
-    "road","zebra", "road", "road","road", "road",
+    "bus", "road", "road", "bus", "road", "road", "road",
+    "60", "road", "road", "road", "road", "80", "road",
+    "road", "zebra", "road", "road", "road", "road",
 ]
 
 
@@ -31,16 +31,19 @@ road = [
 def is_valid_sign(sign):
     if not isinstance(sign, str):
         return False
-    if sign == "zebra" and sign == "bus":
+
+    if sign == "bus" or sign == "zebra":
         return True
+
     try:
         number = int(sign)
     except ValueError:
         return False
-    if number >=20 and number <=100:
+
+    if 20 <= number <= 100:
         return True
 
-     
+    return False
 
 
 # TODO 2: Return "bus", "zebra", "speed" (a number) or "road" (anything else).
@@ -53,13 +56,13 @@ def get_sign_type(sign):
         return "speed"
     return "road"
 
+
 # ==================== PART 2: TAKE ACTION ====================
 
 # TODO 3: If the sign is a speed sign, return its number as an int. Else return current_limit.
 def get_speed_limit(sign, current_limit):
     if get_sign_type(sign) == "speed":
-        number = int(sign)
-        return number
+        return int(sign)
     return current_limit
 
 
@@ -78,32 +81,35 @@ def adjust_speed(speed, target):
         new_speed = speed + ACCELERATION
         if new_speed > target:
             return target
-    return new_speed
+        return new_speed
 
     if speed > target:
         new_speed = speed - BRAKING
-
         if new_speed < target:
             return target
-        
-    return new_speed
+        return new_speed
+
+    return speed
+
 
 # TODO 6: Use a loop. Return (speed_signs, zebras, buses).
 def count_signs(road_list):
     speed_signs = 0
     zebras = 0
-    bueses = 0
+    buses = 0
 
-    for signs in road_list:
+    for sign in road_list:
         sign_type = get_sign_type(sign)
-        if  sign_type == "speed":
-            speed_signs +=1
+        if sign_type == "speed":
+            speed_signs += 1
         elif sign_type == "zebra":
-            zebras +=1
+            zebras += 1
         elif sign_type == "bus":
-            bueses +=1
-        
-    return(speed_signs, zebras, bueses)
+            buses += 1
+
+    return speed_signs, zebras, buses
+
+
 # ==================== PART 3: SAFE INPUT AND JOURNEY SUMMARY ====================
 
 # TODO 7: Keep asking until the user types a whole number from low to high.
@@ -112,25 +118,41 @@ def ask_for_number(question, low, high):
     while True:
         try:
             number = int(input(question))
-        except:
-            print(f"Type whole number between{low} and {high}")
+        except ValueError:
+            print(f"Type a whole number between {low} and {high}.")
             continue
+
         if number < low or number > high:
-            print("The {number} is out of range {low} and {high}")
+            print(f"The number must be between {low} and {high}.")
             continue
-        
+
         return number
+
 
 # TODO 8: Insert sign at position. Return False if position is not from 0 to len(road_list).
 # Otherwise insert and return True.
 def insert_sign(road_list, sign, position):
-    pass
+    if not is_valid_sign(sign):
+        return False
+
+    if position < 0 or position > len(road_list):
+        return False
+
+    road_list.insert(position, sign)
+    return True
 
 
 # TODO 9: Replace the sign at index with a new sign. Return False if index is not
 # from 0 to len(road_list) - 1. Otherwise replace it and return True.
 def replace_sign(road_list, sign, index):
-    pass
+    if not is_valid_sign(sign):
+        return False
+
+    if index < 0 or index >= len(road_list):
+        return False
+
+    road_list[index] = sign
+    return True
 
 
 # TODO 10: Summarise the journey. Use a loop to count the signs we pass
@@ -138,7 +160,14 @@ def replace_sign(road_list, sign, index):
 # (signs_passed, length_m, START_NAME, END_NAME)
 # length_m is the number of segments times SEGMENT_M.
 def get_journey_summary(road_list):
-    pass
+    signs_passed = 0
+
+    for sign in road_list:
+        if sign != "road":
+            signs_passed += 1
+
+    length_m = len(road_list) * SEGMENT_M
+    return signs_passed, length_m, START_NAME, END_NAME
 
 
 if __name__ == "__main__":
